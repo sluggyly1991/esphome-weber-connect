@@ -1,0 +1,8 @@
+{
+  "name": "Weber Connect BLE",
+  "version": "0.1.0",
+  "codeowners": [],
+  "documentation": "https://github.com/DEIN_USER/esphome-weber-connect",
+  "dependencies": ["ble_client", "esp32_ble_tracker"],
+  "platforms": ["esp32"]
+}

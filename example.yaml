@@ -1,0 +1,111 @@
+substitutions:
+  device_name: weber-connect-bridge
+  weber_mac: "AA:BB:CC:DD:EE:FF"
+
+esphome:
+  name: ${device_name}
+  friendly_name: Weber Connect Bridge
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+logger:
+  level: DEBUG
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/sluggyly1991/esphome-weber-connect
+    components: [weber_connect_ble]
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: ${weber_mac}
+    id: weber_hub
+    auto_connect: true
+
+weber_connect_ble:
+  id: weber
+  ble_client_id: weber_hub
+  name: "Weber Connect"
+  poll_interval: 30s
+  listen_duration: 8s
+  phone_handoff_duration: 15min
+  pairing_name: "ESPHome Weber"
+  handshake_characteristic: session
+  pairing_characteristic: command
+
+sensor:
+  - platform: weber_connect_ble
+    probe: 1
+    temperature:
+      name: "Weber Probe 1 Temperature"
+    battery:
+      name: "Weber Probe 1 Battery"
+  - platform: weber_connect_ble
+    probe: 2
+    temperature:
+      name: "Weber Probe 2 Temperature"
+    battery:
+      name: "Weber Probe 2 Battery"
+  - platform: weber_connect_ble
+    probe: 3
+    temperature:
+      name: "Weber Probe 3 Temperature"
+    battery:
+      name: "Weber Probe 3 Battery"
+  - platform: weber_connect_ble
+    probe: 4
+    temperature:
+      name: "Weber Probe 4 Temperature"
+    battery:
+      name: "Weber Probe 4 Battery"
+
+text_sensor:
+  - platform: weber_connect_ble
+    probe: 1
+    state:
+      name: "Weber Probe 1 State"
+    connection_state:
+      name: "Weber Connection State"
+    hub_serial_or_device_id:
+      name: "Weber Hub Device ID"
+  - platform: weber_connect_ble
+    probe: 2
+    state:
+      name: "Weber Probe 2 State"
+  - platform: weber_connect_ble
+    probe: 3
+    state:
+      name: "Weber Probe 3 State"
+  - platform: weber_connect_ble
+    probe: 4
+    state:
+      name: "Weber Probe 4 State"
+
+button:
+  - platform: weber_connect_ble
+    pair:
+      name: "Weber Pair"
+    disconnect:
+      name: "Weber Disconnect"
+    use_with_phone:
+      name: "Weber Use With Phone"
+    clear_pairing_data:
+      name: "Weber Clear Pairing Data"
+      entity_category: diagnostic

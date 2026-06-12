@@ -1,0 +1,58 @@
+esphome:
+  name: weber-component-test
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+logger:
+api:
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+    components: [weber_connect_ble]
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: AA:BB:CC:DD:EE:FF
+    id: weber_hub
+
+weber_connect_ble:
+  id: weber
+  ble_client_id: weber_hub
+  poll_interval: 30s
+  listen_duration: 8s
+  pairing_name: "ESPHome Weber"
+
+sensor:
+  - platform: weber_connect_ble
+    probe: 1
+    temperature:
+      name: Probe Temperature
+    battery:
+      name: Probe Battery
+
+text_sensor:
+  - platform: weber_connect_ble
+    probe: 1
+    state:
+      name: Probe State
+    connection_state:
+      name: Connection State
+    hub_serial_or_device_id:
+      name: Hub Device ID
+
+button:
+  - platform: weber_connect_ble
+    pair:
+      name: Pair
+    disconnect:
+      name: Disconnect
+    use_with_phone:
+      name: Use With Phone
+    clear_pairing_data:
+      name: Clear Pairing Data
